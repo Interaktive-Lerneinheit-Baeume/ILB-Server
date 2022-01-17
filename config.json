@@ -1,0 +1,9 @@
+{
+    "port": 8001,
+    "appDir": "client",
+    "dataDir": "data/open",
+    "resultsDir": "data/done",
+    "updateScript": "update.sh",
+    "idleExperimentsCheckInterval": 1,
+    "experimentResetTime": 2
+} 
