@@ -10,6 +10,8 @@
     "skills" : null,
     "gender": null,
     "end_time": null,
+    "another_languages": null,
+    "java_knowledge": 0,
 
     "knowl_zyklusChecked": false,
     "knowl_binaryTreeChecked" : false,

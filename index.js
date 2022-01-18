@@ -19,7 +19,6 @@ function startServer() {
     app = express();
     app.use(express.json()); //express.json - sending data in the form of some json data object = POST or PUT
    
-
     app.get("/api/experiment/:id", onExperimentRequested); // Returns current state of given experiment from server
     app.get("/api/experiments/random", onRandomExperimentRequested); // Returns current state of a random pick from all available experiments
 
@@ -29,7 +28,7 @@ function startServer() {
     app.post("/api/experiment/:id/cancel", onExperimentCanceled); // Resets given experiment on server
     app.post("/api/experiment/:id/close", onExperimentClosed); // Sets experiment state to closed and stores it on server
 
-    app.listen(Config.port);
+    app.listen("https://ilb-server.software-engineering.education");
     console.log("Server runs on the port http://localhost:" + Config.port + "/app");
 }
 

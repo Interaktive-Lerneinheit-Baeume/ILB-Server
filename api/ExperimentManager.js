@@ -35,6 +35,9 @@ function updateExperimentOnDisk(experiment) {
                 e.skills = experiment.skills;
                 e.gender = experiment.gender;
                 e.start_time = experiment.start_time;
+                e.another_languages = experiment.another_languages;
+                e.java_knowledge = experiment.java_knowledge;
+
                 e.knowl_nodeGraphChecked = experiment.knowl_nodeGraphChecked;
                 e.knowl_arrayCheckboxChecked = experiment.knowl_arrayCheckboxChecked;
                 e.knowl_binaryTreeChecked = experiment.knowl_binaryTreeChecked;
@@ -96,6 +99,8 @@ function resetExperimentWidthID(id) {
         foundExperiments[0].studentNumber = null;
         foundExperiments[0].modus = "noStartData";
         foundExperiments[0].start_time = null;
+        foundExperiments[0].another_languages = null;
+        foundExperiments[0].java_knowledge = 0;
 
         foundExperiments[0].knowl_zyklusChecked = false;
         foundExperiments[0].knowl_binaryTreeChecked = false;
@@ -123,7 +128,7 @@ function resetExperimentWidthID(id) {
 
 class Experiment {
 
-    constructor(id, state, startedAt, name, age, studentNumber, engagement, modus, skills, gender, start_time,
+    constructor(id, state, startedAt, name, age, studentNumber, engagement, modus, skills, gender, start_time, java_knowledge, another_languages,
         zyklusChecked, binaryTreeChecked, binarySearchTreeChecked, nodeGraphChecked, arrayCheckboxChecked,
         knowl_2_datastructure_checked, compr_differenceOfTrees, applAnSyn_treeHeightSequence, applAnSyn_sequencesConstructed, applAnSyn_treesSelected, applAnSyn_printMethod,
         checkedTreesAsCorrect, counterOfErrorPopUp, end_time) {
@@ -139,6 +144,8 @@ class Experiment {
         this.skills = skills;
         this.gender = gender;
         this.start_time = start_time;
+        this.java_knowledge = java_knowledge;
+        this.another_languages = another_languages;
 
         this.knowl_arrayCheckboxChecked = arrayCheckboxChecked;
         this.knowl_binaryTreeChecked = binaryTreeChecked;
@@ -168,6 +175,8 @@ class Experiment {
             values.name, values.age, values.studentNumber,
             values.engagement, values.modus, values.skills, values.gender,
             values.start_time,
+            values.java_knowledge,
+            values.another_languages,
 
             values.knowl_zyklusChecked, 
             values.knowl_binaryTreeChecked, 
