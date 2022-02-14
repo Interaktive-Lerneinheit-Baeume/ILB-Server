@@ -22,6 +22,7 @@
   "dependencies": {
     "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "sweetalert2": "^11.1.10"
   }

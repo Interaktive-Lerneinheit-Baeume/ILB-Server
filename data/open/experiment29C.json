@@ -29,5 +29,9 @@
     "erfahrung_auf_der_lernplattform_einschaetzen": null,
     "war_das_lernmaterial_nachvollziebar": null,
     "gut_gefallen": null,
-    "nicht_gefallen_verbesserungen": null
+    "nicht_gefallen_verbesserungen": null,
+
+    "duration_time_of_learning_and_visualisation": 0,
+    "duration_time_of_visualisation": 0,
+    "duration_time_of_knowledge_test" : 0
 }

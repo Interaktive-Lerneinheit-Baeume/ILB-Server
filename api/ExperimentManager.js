@@ -69,6 +69,11 @@ function updateExperimentOnDisk(experiment) {
         e.gut_gefallen = experiment.gut_gefallen;
         e.nicht_gefallen_verbesserungen =
           experiment.nicht_gefallen_verbesserungen;
+
+        e.duration_time_of_learning_and_visualisation =
+          experiment.duration_time_of_learning_and_visualisation;
+        e.duration_time_of_visualisation = experiment.duration_time_of_visualisation;
+        e.duration_time_of_knowledge_test = experiment.duration_time_of_knowledge_test;
       }
     }
   });
@@ -142,6 +147,10 @@ function resetExperimentWidthID(id) {
     foundExperiments[0].gut_gefallen = null;
     foundExperiments[0].nicht_gefallen_verbesserungen = null;
 
+    foundExperiments[0].duration_time_of_learning_and_visualisation = 0;
+    foundExperiments[0].duration_time_of_visualisation = 0;
+    foundExperiments[0].duration_time_of_knowledge_test = 0;
+
     return updateExperimentOnDisk(foundExperiments[0]);
   }
   return new ExperimentError(
@@ -181,7 +190,12 @@ class Experiment {
     erfahrung_auf_der_lernplattform_einschaetzen,
     war_das_lernmaterial_nachvollziebar,
     gut_gefallen,
-    nicht_gefallen_verbesserungen
+    nicht_gefallen_verbesserungen,
+
+    duration_time_of_learning_and_visualisation,
+    duration_time_of_visualisation,
+    duration_time_of_knowledge_test
+    
   ) {
     this.id = id;
     this.state = state;
@@ -222,6 +236,10 @@ class Experiment {
       war_das_lernmaterial_nachvollziebar;
     this.gut_gefallen = gut_gefallen;
     this.nicht_gefallen_verbesserungen = nicht_gefallen_verbesserungen;
+
+    this.duration_time_of_knowledge_test = duration_time_of_knowledge_test;
+    this.duration_time_of_learning_and_visualisation = duration_time_of_learning_and_visualisation;
+    this.duration_time_of_visualisation = duration_time_of_visualisation;
   }
 
   static fromFile(filePath) {
@@ -265,7 +283,11 @@ class Experiment {
       values.erfahrung_auf_der_lernplattform_einschaetzen,
       values.war_das_lernmaterial_nachvollziebar,
       values.gut_gefallen,
-      values.nicht_gefallen_verbesserungen
+      values.nicht_gefallen_verbesserungen,
+
+      values.duration_time_of_learning_and_visualisation,
+      values.duration_time_of_visualisation,
+      values.duration_time_of_knowledge_test
     );
   }
 }

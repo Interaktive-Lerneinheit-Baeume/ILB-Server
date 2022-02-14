@@ -2,6 +2,7 @@
 //https://github.com/alexanderbazo/ExperimentManager.git
 import express from "express";
 import Config from "./api/Config.js";
+import cors from "cors";
 import ExperimentManager from "./api/ExperimentManager.js";
 
 let app;
@@ -17,6 +18,8 @@ function start() {
 
 function startServer() {
     app = express();
+    // TODO: 
+    app.use(cors());
     app.use(express.json()); //express.json - sending data in the form of some json data object = POST or PUT
    
     app.get("/api/experiment/:id", onExperimentRequested); // Returns current state of given experiment from server
@@ -28,7 +31,7 @@ function startServer() {
     app.post("/api/experiment/:id/cancel", onExperimentCanceled); // Resets given experiment on server
     app.post("/api/experiment/:id/close", onExperimentClosed); // Sets experiment state to closed and stores it on server
 
-    app.listen("https://ilb-server.software-engineering.education");
+    app.listen(Config.port);
     console.log("Server runs on the port http://localhost:" + Config.port + "/app");
 }
 
