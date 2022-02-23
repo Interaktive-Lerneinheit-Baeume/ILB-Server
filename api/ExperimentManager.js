@@ -27,55 +27,9 @@ function updateExperimentOnDisk(experiment) {
     experimentAsJSON = JSON.stringify(experiment);
 
   experiments.forEach((e) => {
-    if (e.id === experiment.id) {
-      if (experiment.modus === "startDataReceived") {
-        e.age = experiment.age;
-        e.studentNumber = experiment.studentNumber;
-        e.name = experiment.name;
-        e.modus = "startDataReceived";
-        e.skills = experiment.skills;
-        e.gender = experiment.gender;
-        e.start_time = experiment.start_time;
-        e.another_languages = experiment.another_languages;
-        e.java_knowledge = experiment.java_knowledge;
-
-        e.knowl_nodeGraphChecked = experiment.knowl_nodeGraphChecked;
-        e.knowl_arrayCheckboxChecked = experiment.knowl_arrayCheckboxChecked;
-        e.knowl_binaryTreeChecked = experiment.knowl_binaryTreeChecked;
-        e.knowl_binarySearchTreeChecked =
-          experiment.knowl_binarySearchTreeChecked;
-        e.knowl_zyklusChecked = experiment.knowl_zyklusChecked;
-        e.knowl_2_datastructure_checked =
-          experiment.knowl_2_datastructure_checked;
-
-        e.compr_differenceOfTrees = experiment.compr_differenceOfTrees;
-        e.applAnSyn_treeHeightSequence =
-          experiment.applAnSyn_treeHeightSequence;
-        e.applAnSyn_sequencesConstructed =
-          experiment.applAnSyn_sequencesConstructed;
-        e.applAnSyn_treesSelected = experiment.applAnSyn_treesSelected;
-        e.applAnSyn_printMethod = experiment.applAnSyn_printMethod;
-        e.checkedTreesAsCorrect = experiment.checkedTreesAsCorrect;
-        e.end_time = experiment.end_time;
-
-        if (experiment.engagement === "constructing") {
-          e.counterOfErrorPopUp = experiment.counterOfErrorPopUp;
-        }
-
-        e.erfahrung_auf_der_lernplattform_einschaetzen =
-          experiment.erfahrung_auf_der_lernplattform_einschaetzen;
-        e.war_das_lernmaterial_nachvollziebar =
-          experiment.war_das_lernmaterial_nachvollziebar;
-        e.gut_gefallen = experiment.gut_gefallen;
-        e.nicht_gefallen_verbesserungen =
-          experiment.nicht_gefallen_verbesserungen;
-
-        e.duration_time_of_learning_and_visualisation =
-          experiment.duration_time_of_learning_and_visualisation;
-        e.duration_time_of_visualisation = experiment.duration_time_of_visualisation;
-        e.duration_time_of_knowledge_test = experiment.duration_time_of_knowledge_test;
-      }
-    }
+    // if (e.id === experiment.id) {
+    //     e.start_time = experiment.start_time;
+    // }
   });
 
   fs.writeFileSync(filePath, experimentAsJSON);
@@ -116,41 +70,6 @@ function resetExperimentWidthID(id) {
   if (foundExperiments.length !== 0) {
     foundExperiments[0].state = "open";
     foundExperiments[0].startedAt = null;
-    foundExperiments[0].name = null;
-    foundExperiments[0].age = null;
-    foundExperiments[0].studentNumber = null;
-    foundExperiments[0].modus = "noStartData";
-    foundExperiments[0].start_time = null;
-    foundExperiments[0].another_languages = null;
-    foundExperiments[0].java_knowledge = 0;
-
-    foundExperiments[0].knowl_zyklusChecked = false;
-    foundExperiments[0].knowl_binaryTreeChecked = false;
-    foundExperiments[0].knowl_binarySearchTreeChecked = false;
-    foundExperiments[0].knowl_nodeGraphChecked = false;
-    foundExperiments[0].knowl_arrayCheckboxChecked = false;
-    foundExperiments[0].knowl_2_datastructure_checked = null;
-
-    (foundExperiments[0].compr_differenceOfTrees = null),
-      (foundExperiments[0].applAnSyn_treeHeightSequence = null);
-    foundExperiments[0].applAnSyn_sequencesConstructed = null;
-    foundExperiments[0].applAnSyn_treesSelected = null;
-    foundExperiments[0].applAnSyn_printMethod = null;
-
-    foundExperiments[0].checkedTreesAsCorrect = null;
-    foundExperiments[0].counterOfErrorPopUp = 0;
-
-    foundExperiments[0].end_time = null;
-
-    foundExperiments[0].erfahrung_auf_der_lernplattform_einschaetzen = null;
-    foundExperiments[0].war_das_lernmaterial_nachvollziebar = null;
-    foundExperiments[0].gut_gefallen = null;
-    foundExperiments[0].nicht_gefallen_verbesserungen = null;
-
-    foundExperiments[0].duration_time_of_learning_and_visualisation = 0;
-    foundExperiments[0].duration_time_of_visualisation = 0;
-    foundExperiments[0].duration_time_of_knowledge_test = 0;
-
     return updateExperimentOnDisk(foundExperiments[0]);
   }
   return new ExperimentError(
@@ -163,83 +82,12 @@ class Experiment {
     id,
     state,
     startedAt,
-    name,
-    age,
-    studentNumber,
-    engagement,
-    modus,
-    skills,
-    gender,
-    start_time,
-    java_knowledge,
-    another_languages,
-    zyklusChecked,
-    binaryTreeChecked,
-    binarySearchTreeChecked,
-    nodeGraphChecked,
-    arrayCheckboxChecked,
-    knowl_2_datastructure_checked,
-    compr_differenceOfTrees,
-    applAnSyn_treeHeightSequence,
-    applAnSyn_sequencesConstructed,
-    applAnSyn_treesSelected,
-    applAnSyn_printMethod,
-    checkedTreesAsCorrect,
-    counterOfErrorPopUp,
-    end_time,
-    erfahrung_auf_der_lernplattform_einschaetzen,
-    war_das_lernmaterial_nachvollziebar,
-    gut_gefallen,
-    nicht_gefallen_verbesserungen,
-
-    duration_time_of_learning_and_visualisation,
-    duration_time_of_visualisation,
-    duration_time_of_knowledge_test
-    
+    engagement
   ) {
     this.id = id;
     this.state = state;
     this.startedAt = startedAt;
-    this.name = name;
-    this.age = age;
-    this.studentNumber = studentNumber;
     this.engagement = engagement;
-    this.modus = modus;
-    this.skills = skills;
-    this.gender = gender;
-    this.start_time = start_time;
-    this.java_knowledge = java_knowledge;
-    this.another_languages = another_languages;
-
-    this.knowl_arrayCheckboxChecked = arrayCheckboxChecked;
-    this.knowl_binaryTreeChecked = binaryTreeChecked;
-    this.knowl_binarySearchTreeChecked = binarySearchTreeChecked;
-    this.knowl_nodeGraphChecked = nodeGraphChecked;
-    this.knowl_zyklusChecked = zyklusChecked;
-    this.knowl_2_datastructure_checked = knowl_2_datastructure_checked;
-
-    this.compr_differenceOfTrees = compr_differenceOfTrees;
-
-    this.applAnSyn_treeHeightSequence = applAnSyn_treeHeightSequence;
-    this.applAnSyn_sequencesConstructed = applAnSyn_sequencesConstructed;
-    this.applAnSyn_treesSelected = applAnSyn_treesSelected;
-    this.applAnSyn_printMethod = applAnSyn_printMethod;
-
-    this.checkedTreesAsCorrect = checkedTreesAsCorrect;
-    this.counterOfErrorPopUp = counterOfErrorPopUp;
-
-    this.end_time = end_time;
-
-    this.erfahrung_auf_der_lernplattform_einschaetzen =
-      erfahrung_auf_der_lernplattform_einschaetzen;
-    this.war_das_lernmaterial_nachvollziebar =
-      war_das_lernmaterial_nachvollziebar;
-    this.gut_gefallen = gut_gefallen;
-    this.nicht_gefallen_verbesserungen = nicht_gefallen_verbesserungen;
-
-    this.duration_time_of_knowledge_test = duration_time_of_knowledge_test;
-    this.duration_time_of_learning_and_visualisation = duration_time_of_learning_and_visualisation;
-    this.duration_time_of_visualisation = duration_time_of_visualisation;
   }
 
   static fromFile(filePath) {
@@ -250,44 +98,7 @@ class Experiment {
       values.id,
       values.state,
       values.startedAt,
-      values.name,
-      values.age,
-      values.studentNumber,
-      values.engagement,
-      values.modus,
-      values.skills,
-      values.gender,
-      values.start_time,
-      values.java_knowledge,
-      values.another_languages,
-
-      values.knowl_zyklusChecked,
-      values.knowl_binaryTreeChecked,
-      values.knowl_binarySearchTreeChecked,
-      values.knowl_nodeGraphChecked,
-      values.knowl_arrayCheckboxChecked,
-      values.knowl_2_datastructure_checked,
-
-      values.compr_differenceOfTrees,
-
-      values.applAnSyn_treeHeightSequence,
-      values.applAnSyn_sequencesConstructed,
-      values.applAnSyn_treesSelected,
-      values.applAnSyn_printMethod,
-
-      values.checkedTreesAsCorrect,
-      values.counterOfErrorPopUp,
-
-      values.end_time,
-
-      values.erfahrung_auf_der_lernplattform_einschaetzen,
-      values.war_das_lernmaterial_nachvollziebar,
-      values.gut_gefallen,
-      values.nicht_gefallen_verbesserungen,
-
-      values.duration_time_of_learning_and_visualisation,
-      values.duration_time_of_visualisation,
-      values.duration_time_of_knowledge_test
+      values.engagement
     );
   }
 }
