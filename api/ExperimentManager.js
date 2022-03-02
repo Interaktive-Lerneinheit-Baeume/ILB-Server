@@ -25,13 +25,6 @@ function loadExperimentsFromDisk(dataPath) {
 function updateExperimentOnDisk(experiment) {
   let filePath = path.join(Config.dataDir, experiment.id + ".json"),
     experimentAsJSON = JSON.stringify(experiment);
-
-  experiments.forEach((e) => {
-    // if (e.id === experiment.id) {
-    //     e.start_time = experiment.start_time;
-    // }
-  });
-
   fs.writeFileSync(filePath, experimentAsJSON);
   if (experiment.state === "closed") {
     let targetPath = path.join(Config.resultsDir, experiment.id + ".json");
@@ -78,12 +71,7 @@ function resetExperimentWidthID(id) {
 }
 
 class Experiment {
-  constructor(
-    id,
-    state,
-    startedAt,
-    engagement
-  ) {
+  constructor(id, state, startedAt, engagement) {
     this.id = id;
     this.state = state;
     this.startedAt = startedAt;
@@ -133,7 +121,6 @@ class ExperimentManager {
    * regularly to prevent prepared cases getting lost when users start but not finish experiments.
    */
   resetIdleExperiments() {
-    // let now = Date(Date.now()).toString(),
     let now = Date.now(),
       idleExperiments = experiments.filter(
         (experiment) =>

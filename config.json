@@ -5,5 +5,5 @@
     "resultsDir": "data/done",
     "updateScript": "update.sh",
     "idleExperimentsCheckInterval": 1,
-    "experimentResetTime": 3
+    "experimentResetTime": 4
 } 
