@@ -18,3 +18,14 @@ data // Daten
  -> open // Offene Experimente
  -> closed // Abgeschlossene Experimente
 ```
+
+## Verfügbare Endpoints der REST-Schnittstelle
+
+| Endpoint | Anfrage | Antwort | Beschreibung |
+|----------------------|---------|---------|--------------|
+| **GET** `/api/experiment/:id | - | Das angefragte Experiment, formatiert als JSON-Objekt | Gibt das Experiment mit der als Parameter übergebenen ID zurück. |
+| **GET** `/api/experiments/random | - | Ein zufälliges offenes Experiment, formatiert als JSON-Objekt | Gibt ein zufällig ausgewähltes Experiment zurück. |
+| **POST** `/api/experiment/:id | Die im Client aktualisierte Fassung des Experiments, formatiert als JSON-Objekt | - | Speichert die übergebene Fassung des Experiments auf dem Server. |
+| **POST** `/api/experiment/:id/append | Die im Client aktualisierte Fassung des Experiments, formatiert als JSON-Objekt | - | Ersetzt ein bereits geschlossenes Experiment auf dem Server durch die übergebene Fassung. |
+| **POST** `/api/experiment/:id/cancel | - | - | Bricht ein Experiment ab und setzt dessen Eigenschaften zurück. Das Experiment kann anschließend für einen anderen Durchlauf verwendet werden. |
+| **POST** `/api/experiment/:id/close | Die im Client aktualisierte Fassung des Experiments, formatiert als JSON-Objekt | - | Speichert die übergebene Fassung des Experiments auf dem Server und schließt das Experiment für weitere Versuche. Das Experiment kann im Anschluss nicht mehr für einen anderen Durchlauf verwendet werden. |
