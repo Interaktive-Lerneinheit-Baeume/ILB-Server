@@ -1,29 +1,28 @@
 {
-  "name": "bachelor-arbeit-borisenko",
+  "name": "ILB-Server",
   "version": "1.0.0",
-  "description": "Visualisierung",
+  "description": "Serverkomponente für ILB-Studie",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "forever start index.js",
+    "stop": "forever stop index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Iulii1102/bachelor-arbeit-borisenko.git"
+    "url": "git+https://github.com/Interaktive-Lerneinheit-Baeume/ILB-Server"
   },
   "keywords": [],
   "author": "Borisenko Iuliia",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Iulii1102/bachelor-arbeit-borisenko/issues"
+    "url": "https://github.com/Interaktive-Lerneinheit-Baeume/ILB-Server/issues"
   },
-  "homepage": "https://github.com/Iulii1102/bachelor-arbeit-borisenko#readme",
+  "homepage": "https://github.com/Interaktive-Lerneinheit-Baeume/ILB-Server#readme",
   "dependencies": {
-    "@actions/core": "^1.6.0",
-    "@actions/github": "^5.0.0",
     "cors": "^2.8.5",
-    "express": "^4.17.1",
-    "sweetalert2": "^11.1.10"
+    "express": "^4.17.3",
+    "forever": "^0.14.2"
   }
 }
