@@ -18,7 +18,6 @@ class Config {
   static fromFile(file) {
     //for reading the file and returning its content in a synchronous way (blocking other parallel processes)
     let valuesAsJSON = fs.readFileSync(file);
-
     return new Config(JSON.parse(valuesAsJSON));
   }
 }
