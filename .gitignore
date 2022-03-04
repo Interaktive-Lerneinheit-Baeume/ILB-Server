@@ -1,5 +1,5 @@
 # Local data (experiment data should be stored separately)
-data
+data/
 
 # Protect local config
 config.json
