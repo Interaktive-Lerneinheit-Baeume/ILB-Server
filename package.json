@@ -4,8 +4,8 @@
   "description": "Serverkomponente für ILB-Studie",
   "main": "index.js",
   "scripts": {
-    "start": "forever start index.js",
-    "stop": "forever stop index.js",
+    "start": "forever start --uid ilb-server --append index.js",
+    "stop": "forever stop ilb-server",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "type": "module",
@@ -23,6 +23,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.3",
-    "forever": "^0.14.2"
+    "forever": "^0.14.2",
+    "http-status-codes": "^2.2.0"
   }
 }
