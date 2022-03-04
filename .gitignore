@@ -1,1 +1,8 @@
+# Local data (experiment data should be stored separately)
+data
+
+# Protect local config
+config.json
+
+# Local dependencies
 node_modules
