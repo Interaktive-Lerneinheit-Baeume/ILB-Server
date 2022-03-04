@@ -1,18 +1,27 @@
 /* eslint-env node */
+
 import fs from "fs";
 import path from "path";
-import Config from "./Config.js";
+import Config from "../Config.js";
+import Logger from "../utils/Logger.js";
+import * as Time from "../utils/Time.js";
+import {
+  Experiment,
+  ExperimentMessage,
+  ExperimentError,
+} from "./Experiment.js";
 
 const CONDITIONS = ["viewing", "constructing"];
 
 let experiments;
 
 function loadExperimentsFromDisk(dataPath) {
+  Logger.log(`Loading experiments from disk (${dataPath}) ...`);
   let files = fs.readdirSync(dataPath);
   experiments = [];
-  files.forEach((file) =>
-    experiments.push(Experiment.fromFile(path.join(dataPath, file)))
-  );
+  files.forEach((file) => experiments.push(Experiment.fromFile(path.join(
+    dataPath, file))));
+  Logger.log(`Loaded ${experiments.length} experiments!`);
 }
 
 /**
@@ -23,10 +32,12 @@ function loadExperimentsFromDisk(dataPath) {
  * experiment object will be removed from the live array ("experiments");
  */
 function updateExperimentOnDisk(experiment) {
+  Logger.log(`Updating experiment (${experiment.id}) on disk ...`);
   let filePath = path.join(Config.dataDir, experiment.id + ".json"),
     experimentAsJSON = JSON.stringify(experiment);
   fs.writeFileSync(filePath, experimentAsJSON);
   if (experiment.state === "closed") {
+    Logger.log(`Closing experiment (${experiment.id}) for good ...`);
     let targetPath = path.join(Config.resultsDir, experiment.id + ".json");
     fs.copyFileSync(filePath, targetPath);
     fs.unlinkSync(filePath);
@@ -34,18 +45,19 @@ function updateExperimentOnDisk(experiment) {
       if (experiments[i].id === experiment.id) {
         experiments.splice(i, 1);
         return new ExperimentMessage(
-          `Experiment ${experiment.id} closed and moved to storage.`
-        );
+          `Experiment ${experiment.id} closed and moved to storage.`);
       }
     }
+  // TODO: Find out what should and what is happening here
   } else if (experiment.state === "open") {
-    console.log("Die Zeit der Session ist abgelaufen!");
-    return new ExperimentMessage("404");
+    Logger.error("Die Zeit der Session ist abgelaufen!");
+    return new ExperimentError("404");
   }
   return new ExperimentMessage(`Experiment ${experiment.id} updated.`);
 }
 
 function updateClosedExperimentOnDisk(experiment) {
+  Logger.log(`Updating closed experiment ${experiment.id} ...`);
   let filePath = path.join(Config.resultsDir, experiment.id + ".json"),
     experimentAsJSON = JSON.stringify(experiment);
   fs.writeFileSync(filePath, experimentAsJSON);
@@ -57,62 +69,45 @@ function updateClosedExperimentOnDisk(experiment) {
  * by another participant
  */
 function resetExperimentWidthID(id) {
-  let foundExperiments = experiments.filter(
-    (experiment) => experiment.id === id
-  );
+  Logger.log(`Resetting experiment ${id}`);
+  let foundExperiments = experiments.filter((experiment) => experiment.id ===
+    id);
   if (foundExperiments.length !== 0) {
     foundExperiments[0].state = "open";
     foundExperiments[0].startedAt = null;
     return updateExperimentOnDisk(foundExperiments[0]);
   }
   return new ExperimentError(
-    `Unknown ID, could not reset experiment for ${id}`
-  );
+    `Unknown ID, could not reset experiment for ${id}`);
 }
 
-class Experiment {
-  constructor(id, state, startedAt, engagement) {
-    this.id = id;
-    this.state = state;
-    this.startedAt = startedAt;
-    this.engagement = engagement;
-  }
+function pickRandomExperimentWithConditionBias(availableExperiments) {
+  let filteredExperiments = {},
+    experimentsForPick,
+    randomNumber;
+  CONDITIONS.forEach((condition) => (filteredExperiments[condition] =
+    availableExperiments.filter((experiment) => experiment
+      .engagement === condition)));
 
-  static fromFile(filePath) {
-    let fileContent = fs.readFileSync(filePath),
-      values = JSON.parse(fileContent);
-
-    return new Experiment(
-      values.id,
-      values.state,
-      values.startedAt,
-      values.engagement
-    );
+  experimentsForPick = filteredExperiments[CONDITIONS[0]];
+  for (let i = 1; i < CONDITIONS.length; i++) {
+    let condition = CONDITIONS[i],
+      experimentsForConditions = filteredExperiments[condition];
+    if (experimentsForConditions.length > experimentsForPick.length) {
+      experimentsForPick = experimentsForConditions;
+    }
   }
-}
-
-class ExperimentError {
-  constructor(error) {
-    this.error = error;
-    Object.freeze(this);
-  }
-}
-
-class ExperimentMessage {
-  constructor(msg) {
-    this.msg = msg;
-    Object.freeze(this);
-  }
+  randomNumber = Math.floor(Math.random() * experimentsForPick.length);
+  return experimentsForPick[randomNumber];
 }
 
 class ExperimentManager {
+
   constructor() {
     loadExperimentsFromDisk(Config.dataDir);
-    // Regularly checks for idle experiments
-    // 1 Minute = 60 Sek = 60 * 1000 mSek = 60000
     setInterval(
       this.resetIdleExperiments,
-      Config.idleExperimentsCheckInterval * 60000
+      Config.idleExperimentsCheckInterval * Time.ONE_MINUTE,
     );
   }
 
@@ -121,12 +116,11 @@ class ExperimentManager {
    * regularly to prevent prepared cases getting lost when users start but not finish experiments.
    */
   resetIdleExperiments() {
+    Logger.log("Looking for idle experiments ...");
     let now = Date.now(),
-      idleExperiments = experiments.filter(
-        (experiment) =>
-          experiment.state === "in-use" &&
-          now - experiment.startedAt > Config.experimentResetTime * 60000
-      );
+      idleExperiments = experiments.filter((experiment) => experiment
+        .state === "in-use" && ((now - experiment.startedAt) > (Config
+          .experimentResetTime * Time.ONE_MINUTE)));
     for (let i = 0; i < idleExperiments.length; i++) {
       let idleExperiment = idleExperiments[i];
       resetExperimentWidthID(idleExperiment.id);
@@ -140,43 +134,24 @@ class ExperimentManager {
    * Before returning, the picked experiment's state will be changed to "in-use".
    */
   pickRandomExperiment() {
+    Logger.log("Picking random experiment ...");
     let availableExperiments, pick;
     if (experiments.length === 0) {
+      Logger.error("No experiment available!");
       return new ExperimentError("No more experiments available");
     }
-    availableExperiments = experiments.filter(
-      (experiment) => experiment.state === "open"
-    );
+    availableExperiments = experiments.filter((experiment) => experiment
+      .state === "open");
     if (availableExperiments.length === 0) {
+      Logger.error("No open experiment available!");
       return new ExperimentError("No open experiment currently available");
     }
-    pick = this.pickRandomExperimentWithConditionBias(availableExperiments);
+    pick = pickRandomExperimentWithConditionBias(availableExperiments);
     pick.state = "in-use";
     pick.startedAt = Date.now();
     updateExperimentOnDisk(pick);
+    Logger.log(`Picked experiment (${pick.id}).`);
     return pick;
-  }
-
-  pickRandomExperimentWithConditionBias(availableExperiments) {
-    let filteredExperiments = {},
-      experimentsForPick;
-    CONDITIONS.forEach(
-      (condition) =>
-        (filteredExperiments[condition] = availableExperiments.filter(
-          (experiment) => experiment.engagement === condition
-        ))
-    );
-
-    experimentsForPick = filteredExperiments[CONDITIONS[0]];
-    for (let i = 1; i < CONDITIONS.length; i++) {
-      let condition = CONDITIONS[i],
-        experimentsForConditions = filteredExperiments[condition];
-      if (experimentsForConditions.length > experimentsForPick.length) {
-        experimentsForPick = experimentsForConditions;
-      }
-    }
-    let randomNumber = Math.floor(Math.random() * experimentsForPick.length);
-    return experimentsForPick[randomNumber];
   }
 
   /**
@@ -184,13 +159,12 @@ class ExperimentManager {
    * Returns the experiment, identified by the given id, without changing its state
    */
   getExperiment(id) {
-    let foundExperiments = experiments.filter(
-      (experiment) => experiment.id === id
-    );
-
+    Logger.log(`Retrieving experiment (${id}) ...`);
+    let foundExperiments = experiments.filter((experiment) => experiment.id === id);
     if (foundExperiments.length !== 0) {
       return foundExperiments[0];
     }
+    Logger.error("Could not find experiment!");
     return new ExperimentError(`Could not retrieve experiment for ${id}`);
   }
 
@@ -199,6 +173,7 @@ class ExperimentManager {
    * participant.
    */
   putBackExperiment(id) {
+    Logger.log(`Putting back experiment (${id}) ...`);
     return resetExperimentWidthID(id);
   }
 
@@ -206,6 +181,7 @@ class ExperimentManager {
    * Updates the given experiment on disk without changing its state
    */
   updateExperimentData(experiment) {
+    Logger.log(`Updating experiment (${experiment.id}) ...`);
     return updateExperimentOnDisk(experiment);
   }
 
@@ -213,6 +189,7 @@ class ExperimentManager {
    * Updates closed experiment on disk
    */
   appendExperimentData(experiment) {
+    Logger.log(`Appending data to experiment (${experiment.id}) ...`);
     return updateClosedExperimentOnDisk(experiment);
   }
 
@@ -221,11 +198,13 @@ class ExperimentManager {
    * stored experiment will not be available to other participants.
    */
   closeExperiment(experiment) {
+    Logger.log(`Closing experiment (${experiment.id}) ...`);
     if (experiment.state === "open") {
-      return new ExperimentMessage("404");
-    } else if ((experiment.state = "closed")) {
-      return updateExperimentOnDisk(experiment);
+      Logger.error("Can not store open experiment!");
+      return new ExperimentError("Can not store open experiment");
     }
+    // TODO: Check if other states then "open" and "closed" are used elsewhere
+    return updateExperimentOnDisk(experiment);
   }
 }
 
