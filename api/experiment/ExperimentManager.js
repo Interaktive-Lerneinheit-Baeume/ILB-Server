@@ -36,6 +36,7 @@ function updateExperimentOnDisk(experiment) {
   let filePath = path.join(Config.dataDir, experiment.id + ".json"),
     experimentAsJSON = JSON.stringify(experiment);
   fs.writeFileSync(filePath, experimentAsJSON);
+  
   if (experiment.state === "closed") {
     Logger.log(`Closing experiment (${experiment.id}) for good ...`);
     let targetPath = path.join(Config.resultsDir, experiment.id + ".json");
@@ -48,10 +49,6 @@ function updateExperimentOnDisk(experiment) {
           `Experiment ${experiment.id} closed and moved to storage.`);
       }
     }
-  // TODO: Find out what should and what is happening here
-  } else if (experiment.state === "open") {
-    Logger.error("Die Zeit der Session ist abgelaufen!");
-    return new ExperimentError("404");
   }
   return new ExperimentMessage(`Experiment ${experiment.id} updated.`);
 }
@@ -198,13 +195,14 @@ class ExperimentManager {
    * stored experiment will not be available to other participants.
    */
   closeExperiment(experiment) {
-    experiment.state = "closed";
+    
     Logger.log(`Closing experiment (${experiment.id}) ...`);
-    if (experiment.state === "open") {
+    if (experiment.state === "open") { //vlt wird dieser niemals erreicht
       Logger.error("Can not store open experiment!");
       return new ExperimentError("Can not store open experiment");
     }
-    // TODO: Check if other states then "open" and "closed" are used elsewhere
+    experiment.state = "closed";
+    // TODO: Check if other states then "open" and "closed" are used elsewhere???
     return updateExperimentOnDisk(experiment);
   }
 }
