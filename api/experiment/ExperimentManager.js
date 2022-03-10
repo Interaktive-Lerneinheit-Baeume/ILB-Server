@@ -195,14 +195,8 @@ class ExperimentManager {
    * stored experiment will not be available to other participants.
    */
   closeExperiment(experiment) {
-    
     Logger.log(`Closing experiment (${experiment.id}) ...`);
-    if (experiment.state === "open") { //vlt wird dieser niemals erreicht
-      Logger.error("Can not store open experiment!");
-      return new ExperimentError("Can not store open experiment");
-    }
     experiment.state = "closed";
-    // TODO: Check if other states then "open" and "closed" are used elsewhere???
     return updateExperimentOnDisk(experiment);
   }
 }
